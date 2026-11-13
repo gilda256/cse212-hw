@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text.Json;
 
 public static class SetsAndMaps
@@ -21,9 +22,33 @@ public static class SetsAndMaps
     /// <param name="words">An array of 2-character words (lowercase, no duplicates)</param>
     public static string[] FindPairs(string[] words)
     {
-        // TODO Problem 1 - ADD YOUR CODE HERE
-        return [];
+    
+     HashSet<string> seenWords = new HashSet<string>();
+     List<string> pairs = new List<string>();
+
+     foreach (string word in words)
+    {
+        if (word[0] == word[1])
+        {
+            continue;
+        }
+
+        string reversedWord = word[1].ToString() + word[0].ToString();
+
+        if (seenWords.Contains(reversedWord))
+        {
+            pairs.Add($"{reversedWord} & {word}");
+        }
+        else
+        {
+            seenWords.Add(word);
+        }
     }
+
+    return pairs.ToArray();
+ }
+    
+
 
     /// <summary>
     /// Read a census file and summarize the degrees (education)
@@ -37,16 +62,27 @@ public static class SetsAndMaps
     /// <param name="filename">The name of the file to read</param>
     /// <returns>fixed array of divisors</returns>
     public static Dictionary<string, int> SummarizeDegrees(string filename)
-    {
-        var degrees = new Dictionary<string, int>();
-        foreach (var line in File.ReadLines(filename))
-        {
-            var fields = line.Split(",");
-            // TODO Problem 2 - ADD YOUR CODE HERE
-        }
+{
+    var degrees = new Dictionary<string, int>();
 
-        return degrees;
+    foreach (var line in File.ReadLines(filename))
+    {
+        var fields = line.Split(",");
+
+        string degree = fields[3];
+
+        if (degrees.ContainsKey(degree))
+        {
+            degrees[degree] += 1;
+        }
+        else
+        {
+            degrees[degree] = 1;
+        }
     }
+
+    return degrees;
+}
 
     /// <summary>
     /// Determine if 'word1' and 'word2' are anagrams.  An anagram
@@ -65,10 +101,46 @@ public static class SetsAndMaps
     /// using the [] notation.
     /// </summary>
     public static bool IsAnagram(string word1, string word2)
+{
+    word1 = word1.Replace(" ", "").ToLower();
+    word2 = word2.Replace(" ", "").ToLower();
+
+    if (word1.Length != word2.Length)
     {
-        // TODO Problem 3 - ADD YOUR CODE HERE
         return false;
     }
+
+    Dictionary<char, int> letterCounts = new Dictionary<char, int>();
+
+    foreach (char letter in word1)
+    {
+        if (letterCounts.ContainsKey(letter))
+        {
+            letterCounts[letter] += 1;
+        }
+        else
+        {
+            letterCounts[letter] = 1;
+        }
+    }
+
+    foreach (char letter in word2)
+    {
+        if (!letterCounts.ContainsKey(letter))
+        {
+            return false;
+        }
+
+        letterCounts[letter] -= 1;
+
+        if (letterCounts[letter] < 0)
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
 
     /// <summary>
     /// This function will read JSON (Javascript Object Notation) data from the 
