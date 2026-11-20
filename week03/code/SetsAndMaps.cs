@@ -33,8 +33,7 @@ public static class SetsAndMaps
             continue;
         }
 
-        string reversedWord = word[1].ToString() + word[0].ToString();
-
+        string reversedWord = new string(new char[] { word[1], word[0] });
         if (seenWords.Contains(reversedWord))
         {
             pairs.Add($"{reversedWord} & {word}");
@@ -168,11 +167,18 @@ public static class SetsAndMaps
 
         var featureCollection = JsonSerializer.Deserialize<FeatureCollection>(json, options);
 
+        List<string> summaries = new List<string>();
+
+       foreach (var feature in featureCollection.Features)
+    {
+        summaries.Add($"{feature.Properties.Place} - Mag {feature.Properties.Mag}");
+    }
+    
         // TODO Problem 5:
         // 1. Add code in FeatureCollection.cs to describe the JSON using classes and properties 
         // on those classes so that the call to Deserialize above works properly.
         // 2. Add code below to create a string out each place a earthquake has happened today and its magitude.
         // 3. Return an array of these string descriptions.
-        return [];
+        return summaries.ToArray();
     }
 }
